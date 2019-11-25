@@ -6,10 +6,24 @@ class Model(tf.keras.model):
         super(Model, self).__init__()
         self.batch_size = None
         self.epochs = None
-        self.learning_rate = None
+        self.learning_rate = .001
+        self.hidden_size = 300
+
+        self.E = tf.keras.layers.Embedding(self.hidden_size )
+        self.L1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
+        self.L2 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
+        self.L3 = tf.keras.layers.Dense(2, activation='softmax')
+        
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate) 
 
     def call(self, inputs):
-        pass
+
+        embeddings = self.E(inputs)
+        L1_output = self.L1(embeddings)
+        L2_output = self.L2(L1_output)
+        L3_output = self.L3(L2_output)
+
+        return L3_output
 
     def loss(self, logits, labels):
         pass
