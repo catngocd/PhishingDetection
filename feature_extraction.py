@@ -49,7 +49,7 @@ def has_ip_addreess(url):
         indicator = 0
     return indicator
 
-attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, is_unusual_url, check_domain, has_sub_domain, has_ip_addreess]
+attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
 
 def process_file(file_name):
     global attribute_extraction_funcs
