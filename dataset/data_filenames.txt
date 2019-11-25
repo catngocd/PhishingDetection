@@ -1,8 +1,1 @@
 cc_1.txt
-cc_2.txt
-cc_3.txt
-phishtank_1.txt
-phishtank_2.txt
-phishtank_3.txt
-top_100k_errored_cc.txt
-top100k_cc.txt
