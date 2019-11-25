@@ -53,25 +53,27 @@ def is_young(url_string):
     try:
         domain = whois.query(url_string)
         creation_date = domain.creation_date
-        d = datetime.datetime.today()
+        d = datetime.date(2019, 3, 11)
         if (d - creation_date).days >= 365:
             return 0
         else:
             return 1
     except:
-        return 1
+        return 0
 
 attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
+test_funcs = [is_young]
 
 def process_file(file_name):
     global attribute_extraction_funcs
+    global test_funcs
     f = open("dataset/" + file_name, "r")
     with open('results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
 
         for line in f:
             line = line.strip()
-            result = [attr_func(line) for attr_func in attribute_extraction_funcs]
+            result = [attr_func(line) for attr_func in test_funcs]
             result.insert(0, line)
             writer.writerow(result)
     
