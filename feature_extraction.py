@@ -49,6 +49,18 @@ def has_ip_addreess(url):
         indicator = 0
     return indicator
 
+def is_young(url_string):
+    try:
+        domain = whois.query(url_string)
+        creation_date = domain.creation_date
+        d = datetime.datetime.today()
+        if (d - creation_date).days >= 365:
+            return 0
+        else:
+            return 1
+    except:
+        return 1
+
 attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
 
 def process_file(file_name):
