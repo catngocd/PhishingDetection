@@ -2,6 +2,8 @@ import re
 import whois
 import csv
 
+from urllib.parse import urlparse
+
 def has_at_symbol(url):
     x = re.search("@", url)
     if x:
@@ -15,10 +17,12 @@ def is_https(url):
     return 0
 
 def check_domain(url):
-    x = re.search("^(?:\/\/|[^\/]+)*.", url)
-    if x:
+    uri = urlparse(url)
+    domain = f"{uri.netloc}"
+    if len(domain.split('-')) > 1:
         return 1
-    return 0   
+    return 0
+    
 
 def check_long_urls(url):
     if len(url) > 54:
