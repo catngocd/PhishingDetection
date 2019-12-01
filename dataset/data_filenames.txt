@@ -1,2 +1,1 @@
-phishtank_2.txt
 phishtank_3.txt

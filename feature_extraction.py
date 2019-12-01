@@ -1,7 +1,7 @@
 import re
 import whois
 import csv
-
+import datetime
 from urllib.parse import urlparse
 
 def has_at_symbol(url):
@@ -19,6 +19,7 @@ def is_https(url):
 def check_domain(url):
     uri = urlparse(url)
     domain = f"{uri.netloc}"
+    
     if len(domain.split('-')) > 1:
         return 1
     return 0
@@ -53,20 +54,24 @@ def has_ip_addreess(url):
         indicator = 0
     return indicator
 
+# Checks is young and if domain exists
 def is_young(url_string):
     try:
-        domain = whois.query(url_string)
-        creation_date = domain.creation_date
-        d = datetime.date(2019, 3, 11)
+        uri = urlparse(url_string)
+        domain = f"{uri.netloc}"
+        domain_info = whois.query(domain)
+        creation_date = domain_info.creation_date
+        d = datetime.datetime(2019, 12, 1)
+        
         if (d - creation_date).days >= 365:
-            return 0
+            return 1,0
         else:
-            return 1
+            return 1,1
     except:
-        return 0
+        return 0,1
 
 attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
-test_funcs = [is_young]
+test_funcs = [is_https]
 
 def process_file(file_name):
     global attribute_extraction_funcs
@@ -78,6 +83,9 @@ def process_file(file_name):
         for line in f:
             line = line.strip()
             result = [attr_func(line) for attr_func in test_funcs]
+            f1, f2 = is_young(line)
+            result.append(f1)
+            result.append(f2)
             result.insert(0, line)
             writer.writerow(result)
     
