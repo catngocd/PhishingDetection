@@ -56,7 +56,12 @@ def train(model, train_data, train_labels, num_features):
 
 
     return 0
-
+def evaluation_metrices(TP,TN,FP,FN):
+    precision = TP/(TP + FP)
+    recall = TP/(TP + FN)
+    accuracy = (TP + TN) / (TP + TN + FP + FN)
+    f_score = 2 * ((precision * recall) / (precision + recall))
+    return precision, recall, accuracy, f_score
 
 def test(model, test_data, test_labels):
     pass
