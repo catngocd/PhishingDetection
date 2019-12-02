@@ -77,8 +77,6 @@ def process_file(file_name):
             f1, f2 = check_whois(line)
             result.append(f1)
             result.append(f2)
-            print(result)
-            result.insert(0, line)
             all_results.append(result)
         writer.writerows(all_results)
     
