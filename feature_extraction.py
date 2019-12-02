@@ -37,13 +37,6 @@ def has_sub_domain(url_string):
     else:
         return 1
 
-def is_unusual_url(url):
-    try:
-        domain = whois.query(url)
-        return 0
-    except:
-        return 1
-
 def has_ip_addreess(url):
     ip = re.search('\d\d\d\.\d\d\.\d\d\d\.\d\d\d', url)
     hex_ip = re.search('0x[\dabcdef]', url)
@@ -55,7 +48,7 @@ def has_ip_addreess(url):
     return indicator
 
 # Checks is young and if domain exists
-def is_young(url_string):
+def check_whois(url_string):
     try:
         uri = urlparse(url_string)
         domain = f"{uri.netloc}"
@@ -70,24 +63,24 @@ def is_young(url_string):
     except:
         return 0,1
 
-attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
-test_funcs = [is_https]
 
 def process_file(file_name):
-    global attribute_extraction_funcs
-    global test_funcs
+    attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
+
     f = open("dataset/" + file_name, "r")
     with open('results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
-
+        all_results = []
         for line in f:
             line = line.strip()
-            result = [attr_func(line) for attr_func in test_funcs]
-            f1, f2 = is_young(line)
+            result = [attr_func(line) for attr_func in attribute_extraction_funcs]
+            f1, f2 = check_whois(line)
             result.append(f1)
             result.append(f2)
+            print(result)
             result.insert(0, line)
-            writer.writerow(result)
+            all_results.append(result)
+        writer.writerows(all_results)
     
     csvfile.close() 
     f.close()

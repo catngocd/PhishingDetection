@@ -1,1 +1,1 @@
-phishtank_3.txt
+phishtank_1.txt
