@@ -72,7 +72,8 @@ def process_file(file_name):
         writer = csv.writer(csvfile)
         all_results = []
         for line in f:
-            line = line.strip()
+            line = line.strip().replace('"', "")
+            print(line)
             result = [attr_func(line) for attr_func in attribute_extraction_funcs]
             f1, f2 = check_whois(line)
             result.append(f1)
