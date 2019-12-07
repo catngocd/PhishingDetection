@@ -18,7 +18,7 @@ def is_https(url):
 
 def check_domain(url):
     uri = urlparse(url)
-    domain = f"{uri.netloc}"
+    domain = str(uri.netloc)
     
     if len(domain.split('-')) > 1:
         return 1
@@ -51,7 +51,7 @@ def has_ip_addreess(url):
 def check_whois(url_string):
     try:
         uri = urlparse(url_string)
-        domain = f"{uri.netloc}"
+        domain = str(uri.netloc)
         domain_info = whois.query(domain)
         creation_date = domain_info.creation_date
         d = datetime.datetime(2019, 12, 1)
@@ -71,6 +71,7 @@ def process_file(file_name):
     with open('results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         all_results = []
+        lines_processed = 0
         for line in f:
             line = line.strip().replace('"', "")
             print(line)
@@ -79,6 +80,8 @@ def process_file(file_name):
             result.append(f1)
             result.append(f2)
             all_results.append(result)
+            print("Lines processed:", lines_processed)
+            lines_processed += 1
         writer.writerows(all_results)
     
     csvfile.close() 

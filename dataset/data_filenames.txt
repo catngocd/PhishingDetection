@@ -1,1 +1,2 @@
-phishing_url.txt
+test_phishtank.txt
+
