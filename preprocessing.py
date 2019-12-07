@@ -11,23 +11,38 @@ def preprocess_all(csv_files, is_phishing):
     all_features = []
     all_labels = []
     for i, csv_file in enumerate(csv_files):
+        # Read in features
         with open(csv_file, "r") as f:
             reader = csv.reader(f)
             features = list(reader)
-            all_features += features
-            if is_phishing[i]:
-                all_labels += [1]*len(features)
-            else:
-                all_labels += [0]*len(features)
-        f.close()
+            all_features += [[int(x) for x in lst] for lst in features]
+            f.close()
+
+        # Generate labels
+        if is_phishing[i]:
+            all_labels += [1]*len(features)
+        else:
+            all_labels += [0]*len(features)
+
     
     all_features = np.array(all_features)
     all_labels = np.array(all_labels)
 
-    all_features = shuffle_all(all_features)
-    all_labels = shuffle_all(all_labels)
+    # Shuffle
+    all_features, all_labels = shuffle_all(all_features, all_labels)
 
-    return all_features, all_labels
+    # Train-test split
+    train_ratio = 0.8
+    num_urls = len(all_features)
+    split_index = int(train_ratio * num_urls)
+
+    train_data = np.array(all_features[0:split_index])
+    train_labels = np.array(all_labels[0:split_index])
+
+    test_data = np.array(all_features[split_index:])
+    test_labels = np.array(all_labels[split_index:])
+
+    return train_data, train_labels, test_data, test_labels
 
 def shuffle_all(features, labels):
     '''
@@ -44,5 +59,5 @@ def shuffle_all(features, labels):
 
     return features, labels
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # preprocess()

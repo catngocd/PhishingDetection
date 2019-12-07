@@ -67,6 +67,7 @@ def check_whois(url_string):
 def process_file(file_name):
     attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
 
+    print("file_name", file_name)
     f = open("dataset/" + file_name, "r")
     with open('results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
@@ -74,12 +75,12 @@ def process_file(file_name):
         lines_processed = 0
         for line in f:
             line = line.strip().replace('"', "")
-            print(line)
             result = [attr_func(line) for attr_func in attribute_extraction_funcs]
             f1, f2 = check_whois(line)
             result.append(f1)
             result.append(f2)
             all_results.append(result)
+            print(result)
             print("Lines processed:", lines_processed)
             lines_processed += 1
         writer.writerows(all_results)
