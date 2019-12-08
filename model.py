@@ -5,59 +5,87 @@ from preprocessing import preprocess_all
 
 class Model(tf.keras.Model):
     def __init__(self):
-
         super(Model, self).__init__()
-        self.batch_size = 128
-        self.epochs = 1
+        self.batch_size = 10
+        self.num_classes = 2
+        self.input_size = 8
+        self.epochs = 200
         self.learning_rate = .001
         self.hidden_size = 300
-
-        self.model = tf.keras.Sequential()
-        # self.model.add(tf.keras.layers.Embedding(self.hidden_size))
-        self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
-        self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
-        self.model.add(tf.keras.layers.Dense(1, activation='softmax'))
-
+        self.W = np.zeros((self.input_size,self.num_classes))
+        self.b = np.zeros(self.num_classes)
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
 
     def call(self, inputs):
-        return self.model(inputs)
+        input_with_w = np.matmul(inputs,self.W) + self.b
+        e = np.exp(input_with_w)
+        predictions = e / np.sum(e, axis=1, keepdims=True)
+        return predictions
 
     def loss(self, logits, labels):
-        return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels, logits))
+        return  np.sum(- np.log(logits[range(0,len(logits)), labels]))/logits.shape[0]
 
     def accuracy(self, logits, labels):
-        predicted_labels = tf.argmax(logits, 1)
-        correct_predictions = tf.equal(predicted_labels, labels)
+        return np.mean(np.argmax(logits, axis=1) == labels)
 
-        return tf.reduce_sum(correct_predictions)
+    def back_propagation(self, inputs, probabilities, labels):
+        """
+        Returns the gradients for model's weights and biases
+        after one forward pass and loss calculation. The learning
+        algorithm for updating weights and biases mentioned in
+        class works for one image, but because we are looking at
+        batch_size number of images at each step, you should take the
+        average of the gradients across all images in the batch.
+        :param inputs: batch inputs (a batch of images)
+        :param probabilities: matrix that contains the probabilities of each
+        class for each image
+        :param labels: true labels
+        :return: gradient for weights,and gradient for biases
+        """
+        # TODO: calculate the gradients for the weights and the gradients for the bias with respect to average loss
+        delta = probabilities.copy()
+        delta[range(len(delta)), labels] -= 1
+        delta_L_b = np.sum(delta, axis=0) / self.batch_size
+        delta_L_w = np.matmul(inputs.T, delta) / self.batch_size
+        return delta_L_w, delta_L_b
+
+    def gradient_descent(self, gradW, gradB):
+        '''
+        Given the gradients for weights and biases, does gradient
+        descent on the Model's parameters.
+        :param gradW: gradient for weights
+        :param gradB: gradient for biases
+        :return: None
+        '''
+        # TODO: change the weights and biases of the model to descent the gradient
+        self.W = self.W - self.learning_rate * gradW
+        self.b = self.b - self.learning_rate * gradB
 
 
 def train(model, train_data, train_labels):
-    for start, end in zip(range(0, len(train_data) - model.batch_size, model.batch_size), 
-                            range(model.batch_size, len(train_data), model.batch_size)):
-        train_X = train_data[start:end]
-        train_Y = train_labels[start:end]
-        with tf.GradientTape() as tape:
-            logits = model.call(train_X)
-            loss = model.loss(logits, np.array(train_Y))
-        print("HERE 1")
-        gradients = tape.gradient(loss, model.trainable_variables)
-        print("HERE 2")
-        model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+    counter = 0
+    batch_low = 0
+    batch_high = model.batch_size
+    while (batch_high <= len(train_data)):
+        inputs = train_data[batch_low : batch_high]
+        labels = train_labels[batch_low : batch_high]
+        probabilities = model.call(inputs)
+        print("Loss:", model.loss(probabilities, labels))
+        delta_L_w, delta_L_b = model.back_propagation(inputs, probabilities, labels)
+        model.gradient_descent(delta_L_w, delta_L_b)
+        counter += 1
+        batch_low = (model.batch_size * counter)
+        batch_high = (model.batch_size * counter) + model.batch_size
+    if (batch_low < len(train_data)):
+        inputs = train_data[batch_low : len(train_data)]
+        labels = train_labels[batch_low : len(train_data)]
+        probabilities = model.call(inputs)
+        model.back_propagation(inputs, probabilities, labels)
 
 
 def test(model, test_data, test_labels):
-    num_correct = 0
-    for start, end in zip(range(0, len(test_data) - model.batch_size, model.batch_size), 
-                        range(model.batch_size, len(test_data), model.batch_size)):
-        test_X = test_data[start:end]
-        test_Y = test_labels[start:end]
-
-        logits = model.call(test_X)
-        num_correct += model.accuracy(logits, test_Y)
-    
-    return num_correct / test_data.shape[0]
+    test_answers = model.call(test_data)
+    return model.accuracy(test_answers,test_labels)
 
 def main():
     csv_files = ["results-phishing_url.csv", "results-cc_1_first_9617_urls.csv"]
