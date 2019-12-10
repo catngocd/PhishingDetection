@@ -9,8 +9,8 @@ class Model(tf.keras.Model):
         super(Model, self).__init__()
         self.batch_size = 10
         self.epochs = 1
-        self.learning_rate = .001
-        self.hidden_size = 300
+        self.learning_rate = .005
+        self.hidden_size = 30
 
         # self.Dense1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
         # self.Dense2 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
@@ -19,7 +19,8 @@ class Model(tf.keras.Model):
         # self.model.add(tf.keras.layers.Embedding(self.hidden_size))
         self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
         self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
-        self.model.add(tf.keras.layers.Dense(2, activation='softmax'))
+        self.model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
+        self.loss_f = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
         # self.E = tf.keras.layers.Embedding(self.hidden_size )
         # self.L1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
@@ -39,13 +40,13 @@ class Model(tf.keras.Model):
 
     def loss(self, logits, labels):
         # return tf.Variable(10)
-        labels = tf.one_hot(labels,2)
-        return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(tf.cast(labels, tf.float32), tf.cast(logits, tf.float32)))
+        #labels = tf.one_hot(labels,1)
+        return tf.reduce_mean(self.loss_f(tf.cast(labels, tf.float32), tf.cast(logits, tf.float32)))
 
     def accuracy(self, logits, labels):
-        print(logits)
-        print(labels)
-        return np.mean(np.argmin(logits, axis=1) == labels)
+        logits = tf.squeeze(logits)
+        x = np.sum(tf.equal(tf.math.round(logits), labels))
+        return x
         # predicted_labels = tf.argmax(logits, 1)
         # correct_predictions = tf.equal(predicted_labels, labels)
 
@@ -96,7 +97,7 @@ def test(model, test_data, test_labels):
         logits = model.call(test_X)
         num_correct += model.accuracy(logits, test_Y)
     
-    return num_correct / test_data.shape[0]
+    return num_correct / len(test_labels)
 
 def main():
     csv_files = ["results-phishing_url.csv", "results-cc_1_first_9617_urls.csv"]
@@ -107,6 +108,7 @@ def main():
     print("train_labels", train_labels.shape)
     print("test_data", test_data.shape)
     print("test_labels", test_labels.shape)
+
     # train_data = np.random.choice([0,1], size=(400,8))
     # train_labels = np.random.choice([0,1], size=(400,1))
     # test_data = np.random.choice([0,1], size=(200,8))

@@ -24,13 +24,12 @@ def preprocess_all(csv_files, is_phishing):
         else:
             all_labels += [0]*len(features)
 
-    
     all_features = np.array(all_features)
     all_labels = np.array(all_labels)
 
     # Shuffle
     all_features, all_labels = shuffle_all(all_features, all_labels)
-
+    
     # Train-test split
     train_ratio = 0.8
     num_urls = len(all_features)
