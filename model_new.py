@@ -7,7 +7,7 @@ class Model(tf.keras.Model):
     def __init__(self):
 
         super(Model, self).__init__()
-        self.batch_size = 1
+        self.batch_size = 10
         self.epochs = 1
         self.learning_rate = .001
         self.hidden_size = 300
@@ -15,44 +15,41 @@ class Model(tf.keras.Model):
         # self.Dense1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
         # self.Dense2 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
         # self.Dense3 = tf.keras.layers.Dense(1, activation='softmax')
-        
+        self.model = tf.keras.Sequential()
         # self.model.add(tf.keras.layers.Embedding(self.hidden_size))
-        # self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
-        # self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
-        # self.model.add(tf.keras.layers.Dense(1))
+        self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
+        self.model.add(tf.keras.layers.Dense(self.hidden_size, activation='relu'))
+        self.model.add(tf.keras.layers.Dense(2, activation='softmax'))
 
-        self.W1 = tf.Variable(tf.random.truncated_normal([8, 300], stddev=0.1)) # 2nd dimension is arbitrary
-        self.b1 = tf.Variable(tf.random.truncated_normal([300], stddev=0.1)) # dimension has to match 2nd dimension of W1
-        self.W2 = tf.Variable(tf.random.truncated_normal([300, 300], stddev=0.1))  # 1st dimension has to match 2nd dimension of W1
-        self.b2 = tf.Variable(tf.random.truncated_normal([300], stddev=0.1)) # dimension has to match 2nd dimension of W2
-        self.W3 = tf.Variable(tf.random.truncated_normal([300, 1], stddev=0.1)) # 2nd dim is 2 because we have 2 classes
-        self.b3 = tf.Variable(tf.random.truncated_normal([1], stddev=0.1)) 
+        # self.E = tf.keras.layers.Embedding(self.hidden_size )
+        # self.L1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
+        # self.L2 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
+        # self.L3 = tf.keras.layers.Dense(2, activation='softmax')
 
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
 
     def call(self, inputs):
-        l1 = tf.matmul(tf.cast(inputs, tf.float32), self.W1) + self.b1
-        l1_a = tf.nn.relu(l1)
 
-        # print("l1:", l1_a.shape)
-        l2 = tf.matmul(tf.cast(l1_a, tf.float32), self.W2) + self.b2
-        l2_a = tf.nn.relu(l2)
-        # print("l2:", l2_a.shape)
-        l3 = tf.matmul(tf.cast(l2_a, tf.float32), self.W3) + self.b3
-        l3_a = tf.nn.softmax(l3)
-        # print("l3:", l3_a.shape)
-        
-        return l3_a
+        # embeddings = self.E(inputs)
+        # L1_output = self.L1(inputs)
+        # L2_output = self.L2(L1_output)
+        # L3_output = self.L3(L2_output)
+
+        return self.model(inputs)
 
     def loss(self, logits, labels):
         # return tf.Variable(10)
-        return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels, logits))
+        labels = tf.one_hot(labels,2)
+        return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(tf.cast(labels, tf.float32), tf.cast(logits, tf.float32)))
 
     def accuracy(self, logits, labels):
-        predicted_labels = tf.argmax(logits, 1)
-        correct_predictions = tf.equal(predicted_labels, labels)
+        print(logits)
+        print(labels)
+        return np.mean(np.argmin(logits, axis=1) == labels)
+        # predicted_labels = tf.argmax(logits, 1)
+        # correct_predictions = tf.equal(predicted_labels, labels)
 
-        return tf.reduce_sum(correct_predictions)
+        # return tf.reduce_sum(correct_predictions)
 
 
 def train(model, train_data, train_labels):
@@ -77,6 +74,7 @@ def train(model, train_data, train_labels):
         print(start, "out of", len(train_data))
         train_X = train_data[start:end]
         # print("Train X: ", train_X.shape)
+        # train_Y = tf.expand_dims(train_labels[start:end], 1)
         train_Y = train_labels[start:end]
         # print("Train Y: ", train_Y.shape)
         with tf.GradientTape() as tape:
@@ -103,14 +101,23 @@ def test(model, test_data, test_labels):
 def main():
     csv_files = ["results-phishing_url.csv", "results-cc_1_first_9617_urls.csv"]
     is_phishing = [True, False]
+    # print(preprocess_all(csv_files, is_phishing))
     train_data, train_labels, test_data, test_labels = preprocess_all(csv_files, is_phishing)
+    print("train_data", train_data.shape)
+    print("train_labels", train_labels.shape)
+    print("test_data", test_data.shape)
+    print("test_labels", test_labels.shape)
+    # train_data = np.random.choice([0,1], size=(400,8))
+    # train_labels = np.random.choice([0,1], size=(400,1))
+    # test_data = np.random.choice([0,1], size=(200,8))
+    # test_labels = np.random.choice([0,1], size=(200,1))
 
     model = Model()
 
     for epoch in range(model.epochs):
         train(model, train_data, train_labels)
 
-    test_accuracy = test(model, train_data, train_labels)
+    test_accuracy = test(model, test_data, test_labels)
     print("Test accuracy:", test_accuracy)
 
 
