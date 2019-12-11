@@ -7,10 +7,13 @@ class Model(tf.keras.Model):
     def __init__(self):
 
         super(Model, self).__init__()
-        self.batch_size = 10
+        self.batch_size = 1
         self.epochs = 1
         self.learning_rate = .005
         self.hidden_size = 30
+
+        # with batch size = 1, epochs = 1, learning rate = .005, hidden size = 30
+        # 
 
         # self.Dense1 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
         # self.Dense2 = tf.keras.layers.Dense(self.hidden_size, activation='relu')
@@ -72,7 +75,7 @@ def train(model, train_data, train_labels):
     
     for start, end in zip(range(0, len(train_data) - model.batch_size, model.batch_size), 
                             range(model.batch_size, len(train_data), model.batch_size)):
-        print(start, "out of", len(train_data))
+        print(start+1, "out of", len(train_data))
         train_X = train_data[start:end]
         # print("Train X: ", train_X.shape)
         # train_Y = tf.expand_dims(train_labels[start:end], 1)
