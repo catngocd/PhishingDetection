@@ -1,1 +1,0 @@
-b'<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112763434-1"></script>\r\n<script>\r\nwindow.dataLayer = window.dataLayer || [];\r\nfunction gtag(){dataLayer.push(arguments);}\r\ngtag(\'js\', new Date());\r\ngtag(\'config\', \'UA-112763434-1\');\r\n</script>\r\n'

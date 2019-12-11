@@ -1,1 +1,0 @@
-b'<html><style> \n    html { \n    background: url("invalid.jpg") no-repeat center center fixed; \n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n    height:80%;\n    }\n  </style>\n  <body>\n    <table></table>\n  </body>\n</html>\n'

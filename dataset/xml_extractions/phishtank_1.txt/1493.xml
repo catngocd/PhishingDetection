@@ -1,1 +1,0 @@
-b'<html>\n <head>\n  <title>500 Internal Server Error</title>\n </head>\n <body>\n  <h1>Internal Server Error</h1>\n  <p>UID of script "/home/httpd/html/index.php" is smaller than min_uid</p>\n  <hr/>  <address>suPHP 0.7.2</address>\n </body>\n</html>\n'

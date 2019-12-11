@@ -19,11 +19,11 @@ def is_https(url):
 def check_domain(url):
     uri = urlparse(url)
     domain = str(uri.netloc)
-    
+
     if len(domain.split('-')) > 1:
         return 1
     return 0
-    
+
 
 def check_long_urls(url):
     if len(url) > 54:
@@ -55,7 +55,7 @@ def check_whois(url_string):
         domain_info = whois.query(domain)
         creation_date = domain_info.creation_date
         d = datetime.datetime(2019, 12, 1)
-        
+
         if (d - creation_date).days >= 365:
             return 1,0
         else:
@@ -69,7 +69,7 @@ def process_file(file_name):
 
     print("file_name", file_name)
     f = open("dataset/" + file_name, "r")
-    with open('results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
+    with open('dataset/results-' + file_name.replace(".txt", "") + '.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         all_results = []
         lines_processed = 0
@@ -84,13 +84,13 @@ def process_file(file_name):
             print("Lines processed:", lines_processed)
             lines_processed += 1
         writer.writerows(all_results)
-    
-    csvfile.close() 
+
+    csvfile.close()
     f.close()
 
 if __name__ == "__main__":
     f = open("dataset/data_filenames.txt", "r")
     for line in f:
         process_file(line.strip())
-    
+
     f.close()

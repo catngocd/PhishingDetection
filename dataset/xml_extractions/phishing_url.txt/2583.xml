@@ -1,1 +1,0 @@
-b'<html><head>\n<meta http-equiv="refresh" content="0; URL=index.htm?from=">\n<script language="JavaScript" type="text/javascript">\n<!--\nfunction redirect() { \nsetTimeout("window.location.replace(\'index.htm?from=\')", 0); }\n-->\n</script>\n</head>\n'
