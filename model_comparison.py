@@ -4,6 +4,7 @@ from preprocessing_vanilla_nn import preprocess_all
 from preprocess_cnn import convert_urls_to_vector
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 def main():
     # Taking in respective files
@@ -50,31 +51,40 @@ def main():
     print("Accuracy using Vanilla NN:", accuracy_vanilla)
     print("Accuracy using CNN: ", accuracy_cnn)
     # data to plot
-    n_groups = 10
+    #n_groups = 10
+    num_epochs = range(0,10)
     # create plot
     fig, ax = plt.subplots()
-    index = np.arange(n_groups)
-    bar_width = 0.35
-    opacity = 0.8
+    #index = np.arange(n_groups)
+    #bar_width = 0.35
+    #opacity = 0.8
 
-    rects1 = plt.bar(index, model_1_accuracies, bar_width,
-    alpha=opacity,
-    color='r',
-    label='Vanilla RNN')
+    # rects1 = plt.bar(index, model_1_accuracies, bar_width,
+    # alpha=opacity,
+    # color='r',
+    # label='Vanilla RNN')
 
-    rects2 = plt.bar(index + bar_width, model_2_accuracies, bar_width,
-    alpha=opacity,
-    color='g',
-    label='CNN')
-
+    # rects2 = plt.bar(index + bar_width, model_2_accuracies, bar_width,
+    # alpha=opacity,
+    # color='g',
+    # label='CNN')
+    with open("vanilla_nn_results.csv", 'w', newline='') as myfile:
+        wr1 = csv.writer(myfile)
+        wr1.writerow(model_1_accuracies)
+    with open("cnn_results.csv", 'w', newline='') as myfile2:
+        wr2 = csv.writer(myfile2)
+        wr2.writerow(model_2_accuracies)
+    plt.plot(num_epochs, model_1_accuracies, 'bo', label='Vanilla RNN')
+    plt.plot(num_epochs, model_2_accuracies, 'r+', label='CNN')
     plt.xlabel('Epoch Number')
     plt.ylabel('Accuracy')
     plt.title('Accuracy by epochs')
-    plt.xticks(index + bar_width, ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'))
+    #plt.xticks(index + bar_width, ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'))
     plt.legend()
-
-    plt.tight_layout()
+    ax.set_ylim(ymin=0.0)
+    #plt.tight_layout()
     plt.show()
+
 
 if __name__ == '__main__':
     main()
