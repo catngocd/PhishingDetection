@@ -4,7 +4,7 @@ from preprocess_cnn import convert_urls_to_vector
 
 
 class Model(tf.keras.Model):
-    def __init__(self, vocab_size):
+    def __init__(self, vocab_size, kernel_s):
 
         """
         The Model class predicts whether a url is phishing or benign.
@@ -19,7 +19,6 @@ class Model(tf.keras.Model):
         self.vocab_size = vocab_size
         self.embedding_size = 32
         self.batch_size = 64
-        self.rnn_size = 128
         self.hidden_layer_size_1 = 512
         self.hidden_layer_size_2 = 256
         self.hidden_layer_size_3 = 128
@@ -27,8 +26,8 @@ class Model(tf.keras.Model):
         self.model = tf.keras.Sequential()
         self.model.add(tf.keras.layers.Embedding(self.vocab_size, self.embedding_size, input_length=200))
         self.model.add(tf.keras.layers.Reshape((200, 32, 1)))
-        self.model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=(3, self.embedding_size), strides=(1,1), padding='valid', activation='relu'))
-        self.model.add(tf.keras.layers.MaxPool2D(pool_size=(200 - 3 + 1, 1), strides=(1,1), padding='valid'))
+        self.model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=(kernel_s, self.embedding_size), strides=(1,1), padding='valid', activation='relu'))
+        self.model.add(tf.keras.layers.MaxPool2D(pool_size=(200 - kernel_s + 1, 1), strides=(1,1), padding='valid'))
         self.model.add(tf.keras.layers.Dense(self.hidden_layer_size_1, activation='relu'))
         self.model.add(tf.keras.layers.Dense(self.hidden_layer_size_2, activation='relu'))
         self.model.add(tf.keras.layers.Dense(self.hidden_layer_size_3, activation='relu'))
@@ -88,7 +87,7 @@ def main():
     file_names = ["dataset/phishing_url.txt", "dataset/cc_1_first_9617_urls"]
     is_phishing = [True, False]
     train_data, train_labels, test_data, test_labels, vocabulary = convert_urls_to_vector(file_names, is_phishing)
-    model = Model(len(vocabulary))
+    model = Model(len(vocabulary), 5)
     # TODO: Set-up the training step
     for i in range(0, 10):
         train(model, train_data, train_labels)

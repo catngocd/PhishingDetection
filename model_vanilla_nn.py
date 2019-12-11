@@ -8,7 +8,7 @@ class Model(tf.keras.Model):
 
         super(Model, self).__init__()
         self.batch_size = 1
-        self.epochs = 1
+        self.epochs = 10
         self.learning_rate = .005
         self.hidden_size = 30
         self.model = tf.keras.Sequential()
