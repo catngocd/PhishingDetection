@@ -1,0 +1,1 @@
+b'1 <br />\n<b>Fatal error</b>:  Uncaught Error: Call to undefined function wp() in /home/CTPQ/web/maibongkimloai.com/public_html/wp-blog-header.php:16\nStack trace:\n#0 /home/CTPQ/web/maibongkimloai.com/public_html/index.php(62): require()\n#1 {main}\n  thrown in <b>/home/CTPQ/web/maibongkimloai.com/public_html/wp-blog-header.php</b> on line <b>16</b><br />\n'

