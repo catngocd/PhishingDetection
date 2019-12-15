@@ -4,6 +4,8 @@ import csv
 import datetime
 from urllib.parse import urlparse
 
+# Used to evaluate each url based on certain characteristics 
+
 def has_at_symbol(url):
     x = re.search("@", url)
     if x:
@@ -47,7 +49,7 @@ def has_ip_addreess(url):
         indicator = 0
     return indicator
 
-# Checks is young and if domain exists
+# Checks if domain exists and it's age. Younger domains are likely phishing. 
 def check_whois(url_string):
     try:
         uri = urlparse(url_string)
@@ -63,7 +65,7 @@ def check_whois(url_string):
     except:
         return 0,1
 
-
+# process and open/read the url data and write them into a CSV file
 def process_file(file_name):
     attribute_extraction_funcs = [is_https, has_at_symbol, check_long_urls, check_domain, has_sub_domain, has_ip_addreess]
 
@@ -84,7 +86,7 @@ def process_file(file_name):
             print("Lines processed:", lines_processed)
             lines_processed += 1
         writer.writerows(all_results)
-
+    # close the files
     csvfile.close()
     f.close()
 
